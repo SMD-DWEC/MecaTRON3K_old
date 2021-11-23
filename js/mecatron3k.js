@@ -1,10 +1,14 @@
 /**
   @file Controlador principal del Juego MecaTRON-3000
   @author Miguel Jaque <mjaque@fundacionloyola.es>
+  @author Sergio Matamoros Delgado
   @license GPL v3 2021
 **/
 
 'use strict'
+
+import { Vista } from "./vista.js";
+import { Modelo } from "./modelo.js";
 
 /**
   Controlador principal del juego.
@@ -28,7 +32,7 @@ class Juego{
     console.log('Iniciando...')
     this.divPrincipal = document.getElementById('divPrincipal')
     this.vista.div = this.divPrincipal
-    this.generadorPalabras = window.setInterval(this.generarPalabra.bind(this), 3000)
+    this.generadorPalabras = window.setInterval(this.generarPalabra.bind(this), 1000) //3000
     this.animador = window.setInterval(this.vista.moverPalabras.bind(this.vista), 300)
     window.onkeypress = this.pulsar.bind(this)
   }
@@ -61,7 +65,9 @@ class Juego{
         //Si ha completado la palabra, la elimino y sumo puntos
         if (nodoTexto.nodeValue.length == 0){
           palabra.remove()
-          this.modelo.sumarPunto()
+          this.modelo.sumarPunto();
+          this.vista.puntuacionClass.puntos = this.modelo.puntos;
+          this.vista.puntuacionClass.mostrar();
         }
       }
       else{
@@ -72,63 +78,4 @@ class Juego{
     }
   }
 }
-
-/**
-  Clase Vista que muestra el juego.
-**/
-class Vista{
-  constructor(){
-    this.div = null   //Div donde se desarrolla el juego
-  }
-  /**
-    Dibuja el área de juego.
-    @param palabra {String} La nueva palabra.
-  */
-  dibujar(palabra){
-    // <div class=palabra>Meca</div>
-    let div = document.createElement('div')
-    this.div.appendChild(div)
-    let span = document.createElement('span')
-    div.appendChild(span)
-    div.appendChild(document.createTextNode(palabra))
-    div.classList.add('palabra')
-    div.style.top = '0px'
-    div.style.left = Math.floor(Math.random() * 85) + '%'
-  }
-  /**
-    Mueve las palabras del Juego
-  **/
-  moverPalabras(){
-    //Busco todas las palabras del div
-    let palabras = this.div.querySelectorAll('.palabra')
-
-    //Para cada palabra, aumento su atributo top.
-    for(let palabra of palabras){
-      let top = parseInt(palabra.style.top)
-      top += 5
-      palabra.style.top = `${top}px`
-      //Si ha llegado al final
-      if (top >= 760)
-        palabra.remove()
-    }
-  }
-}
-
-/**
-  Modelo de datos del juego.
-**/
-class Modelo{
-  constructor(){
-      this.palabras = ['En', 'un', 'lugar', 'de', 'La', 'Mancha']
-  }
-  /**
-    Devuelve una nueva palabra.
-    Devuelve aleatoriamente unn elemento del array de palabras.
-    @return {String} Palabra generada
-  **/
-  crearPalabra(){
-    return this.palabras[Math.floor(Math.random() * this.palabras.length)]
-  }
-}
-
 var app = new Juego()
