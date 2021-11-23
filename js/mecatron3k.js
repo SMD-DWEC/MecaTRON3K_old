@@ -23,6 +23,7 @@ class Juego{
     this.generadorPalabras = null
     this.animador = null
     this.divPrincipal = null
+    this.spacePressed = false;
     window.onload = this.iniciar.bind(this)
   }
   /**
@@ -31,8 +32,9 @@ class Juego{
   iniciar(){
     console.log('Iniciando...')
     this.divPrincipal = document.getElementById('divPrincipal')
-    this.vista.div = this.divPrincipal
-    this.generadorPalabras = window.setInterval(this.generarPalabra.bind(this), 1000) //3000
+    this.vista.div = this.divPrincipal;
+
+    this.generadorPalabras = window.setInterval(this.generarPalabra.bind(this), 3000) //3000
     this.animador = window.setInterval(this.vista.moverPalabras.bind(this.vista), 300)
     window.onkeypress = this.pulsar.bind(this)
   }
@@ -51,6 +53,21 @@ class Juego{
   **/
   pulsar(evento){
     let letraPulsada = evento.key
+
+    /*if(evento.code == "Space") {
+      if(this.spacePressed) {
+        this.spacePressed == false;
+        this.iniciar();
+        console.log("JUEGO REANUDADO");
+      }
+      else {
+        this.spacePressed == false;
+        clearInterval(this.generadorPalabras);
+        clearInterval(this.animador);
+        console.log("JUEGO EN PAUSA");
+      }
+    }*/
+
     //Busco todas las palabras
     let palabras = this.divPrincipal.querySelectorAll('.palabra')
     for(let palabra of palabras){
